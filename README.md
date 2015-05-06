@@ -14,7 +14,7 @@ JUnit - run your tests individually from inside your IDE, use JUnit rules, param
 Add as a dependency:
 
     <dependency>
-        <groupId>org.jake</groupId>
+        <groupId>com.jakewins</groupId>
         <artifactId>javadoc-test</artifactId>
         <version>1.0</version>
         <scope>test</scope>

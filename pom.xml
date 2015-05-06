@@ -6,7 +6,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <groupId>org.jake</groupId>
+  <groupId>com.jakewins</groupId>
   <artifactId>javadoc-test</artifactId>
   <version>1.0-SNAPSHOT</version>
 
