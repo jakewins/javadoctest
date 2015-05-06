@@ -30,3 +30,4 @@ __pycache__
 *.graphdb
 messages.log
 default.db
+pom.xml.versionBackup
