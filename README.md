@@ -20,7 +20,7 @@ Add as a dependency:
         <scope>test</scope>
     </dependency>
 
-Write an example, wrapped in <pre> tags, including where to find the test method for your example:
+Write an example, wrapped in 'pre' tags, including where to find the test method for your example:
 
     /**
      * Perform the action. For example:
