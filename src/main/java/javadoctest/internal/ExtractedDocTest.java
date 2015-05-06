@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-class ExtractedDocTest
+public class ExtractedDocTest
 {
     private final String code;
     private Collection<String> sourceClassImports;
