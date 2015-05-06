@@ -42,11 +42,13 @@ import java.util.List;
  * formatting and the '@code' tag avoids having to escape special characters. The class attribute of the pre
  * tag should point to the class and method that contains setup and assertion code.
  *
- * <h2>For example:</h3>
+ * <h2>For example:</h2>
  *
+ * {@code
  * <pre class="doctest:javadoctest.DocTestRunnerDocTest#classDoc">
  * myObject.call();
  * </pre>
+ * }
  *
  * The test method does not need annotations, but since this runner is a regular JUnit4 runner, JUnit rules
  * and before/after methods will run as normal. The test method will get passed a {@link DocSnippet docs snippet},

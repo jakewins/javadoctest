@@ -9,11 +9,24 @@
 
   <groupId>com.jakewins</groupId>
   <artifactId>javadoc-test</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <packaging>jar</packaging>
   <name>JavaDoc Test Framework</name>
   <description>Test example code from your javadocs</description>
+
+  <url>http://github.com/jakewins/javadoctest</url>
+  <scm>
+    <url>scm:git:https://github.com/jakewins/javadoctest.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Jacob Hansson</name>
+      <url>http://jakewins.com</url>
+      <email>jakewins@gmail.com</email>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
@@ -67,22 +80,9 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -144,6 +144,9 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
+                <configuration>
+                  <excludePackageNames>*.internal.*</excludePackageNames>
+                </configuration>
               </execution>
             </executions>
           </plugin>

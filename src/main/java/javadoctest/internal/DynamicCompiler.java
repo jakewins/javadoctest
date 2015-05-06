@@ -44,7 +44,9 @@ public class DynamicCompiler
     /**
      * @param className has to match the package and class name, for instance 'mypackage.MyClass'
      * @param source the full class source code
-     * @throws Exception
+     * @param <T> an interface the class implements
+     * @throws Exception if the compilation fails
+     * @return an instance of the compiled class
      */
     public <T> T newInstance( String className, String source )
             throws Exception
@@ -80,7 +82,7 @@ public class DynamicCompiler
 
             compiler.getTask( null, fm, diagnostics, null, null, fm.getJavaFileObjects( sourceFile ) ).call();
 
-            ensureNoErrors( diagnostics, source );
+            ensureNoErrors( diagnostics, source  );
         }
         finally
         {

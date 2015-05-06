@@ -56,6 +56,12 @@ And then write a test for it:
 Contributions are super welcome - but do reach out to me first, so that we're not working on the same thing or building
 in different directions!
 
+## Release
+
+    mvn clean versions:set deploy -P release  -DnewVersion=<version>
+    git tag <version>
+    git push
+
 ## License
 
 The MIT License (MIT)

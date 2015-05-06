@@ -117,13 +117,13 @@ public class ExtractedDocTest
         return source;
     }
 
-    /** Name of package that the snippet gets stored in */
+    /** @return name of package that the snippet gets stored in */
     public String targetPackage()
     {
         return sourcePackage;
     }
 
-    /** Name of class that the snippet gets stored in */
+    /** @return name of class that the snippet gets stored in */
     public String targetClass()
     {
         return sourceClass + "$DocTest";
