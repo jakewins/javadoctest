@@ -1,5 +1,7 @@
 # JavaDoc Test
 
+[![Build Status](https://travis-ci.org/jakewins/javadoctest.svg?branch=master)](https://travis-ci.org/jakewins/javadoctest)
+
 Test code examples in your java docs with JUnit!
 
 JavaDocTest lets you write free-form code examples, mapping them to JUnit tests that can get and set variables
