@@ -15,7 +15,7 @@ Write a code example, wrapped in 'pre' tags, including where to find the test me
     /**
      * Perform the action. For example:
      *
-     * <pre class="doctest:mypackage.MyDocTest#testMyMethod">
+     * <pre class="doctest:mypackage.MyDocTest#theTest">
      * Object myResult = myObject.myMethod("Hello, world!");
      * </pre>
      */
@@ -34,10 +34,12 @@ Add JavaDoc-Test as a dependency:
 
 And then write a test for it:
 
+    /** Note the class name here matches the class name in the 'pre' tag in the javadoc! */
     @RunWith( DocTestRunner.class )
     class MyDocTest
     {
-        public void testMyMethod( DocSnippet codeSnippet )
+        /** Note the method name here matches the method name in the 'pre' tag in the javadoc! */
+        public void theTest( DocSnippet codeSnippet )
         {
             // Given a variable 'myObject' is available to the script
             codeSnippet.set( "myObject", new MyObject() );
