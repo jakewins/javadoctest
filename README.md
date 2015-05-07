@@ -50,6 +50,8 @@ And then write a test for it:
         }
     }
 
+For more details, refer to the ["DocTest" tests](https://github.com/jakewins/javadoctest/tree/master/src/test/java/javadoctest), which all use `javadoc-test` to test itself.
+
 ## Contributions
 
 Contributions are super welcome - but do reach out first, so that we're not working on the same thing or building
