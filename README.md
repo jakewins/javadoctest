@@ -1,28 +1,16 @@
-# JavaDoc Test
+# JavaDoc-Test
 
 [![Build Status](https://travis-ci.org/jakewins/javadoctest.svg?branch=master)](https://travis-ci.org/jakewins/javadoctest)
 
 Test code examples in your java docs with JUnit!
 
-JavaDocTest lets you write free-form code examples, mapping them to JUnit tests that can get and set variables
-referenced in the example, and writing assertions for them.
-
-This allows your examples to contain exactly the code you want to show without requiring test-centric setup,
-assertions, and tear-down code to verify that the examples work as intended. It also lets you leverage the power of
-JUnit - run your tests individually from inside your IDE, use JUnit rules, parameters and setup mechanisms and so on.
+This allows your examples to contain exactly the code you want to show - setup, assertions and tear-down is done in
+a JUnit test. Run your tests from inside your IDE, use JUnit rules, parameters and setup mechanisms,
+integrate seamlessly in your existing test infrastructure.
 
 ## Minimum Viable Snippet
 
-Add as a dependency:
-
-    <dependency>
-        <groupId>com.jakewins</groupId>
-        <artifactId>javadoc-test</artifactId>
-        <version>1.0</version>
-        <scope>test</scope>
-    </dependency>
-
-Write an example, wrapped in 'pre' tags, including where to find the test method for your example:
+Write a code example, wrapped in 'pre' tags, including where to find the test method:
 
     /**
      * Perform the action. For example:
@@ -32,6 +20,17 @@ Write an example, wrapped in 'pre' tags, including where to find the test method
      * </pre>
      */
     public Object myMethod(String myArgument);
+
+
+Add JavaDoc-Test as a dependency:
+
+    <dependency>
+        <groupId>com.jakewins</groupId>
+        <artifactId>javadoc-test</artifactId>
+        <version>1.0</version>
+        <scope>test</scope>
+    </dependency>
+
 
 And then write a test for it:
 
@@ -53,7 +52,7 @@ And then write a test for it:
 
 ## Contributions
 
-Contributions are super welcome - but do reach out to me first, so that we're not working on the same thing or building
+Contributions are super welcome - but do reach out first, so that we're not working on the same thing or building
 in different directions!
 
 ## Release
