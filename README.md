@@ -27,7 +27,7 @@ Add JavaDoc-Test as a dependency:
     <dependency>
         <groupId>com.jakewins</groupId>
         <artifactId>javadoc-test</artifactId>
-        <version>1.0</version>
+        <version>1.1.1</version>
         <scope>test</scope>
     </dependency>
 
