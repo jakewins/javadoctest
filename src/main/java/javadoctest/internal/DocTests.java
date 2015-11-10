@@ -19,19 +19,17 @@
  */
 package javadoctest.internal;
 
+import javadoctest.internal.func.Consumer;
+import javadoctest.internal.func.Predicate;
 import junit.framework.AssertionFailedError;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 
 /**
  * Discovers and caches parsed javadoc tests.
@@ -57,46 +55,38 @@ public class DocTests
         {
             allTests = new HashMap<>();
 
-            Path sourceDir = Paths.get( "." );
-            try
+            FileWalker.walk( Paths.get( "." ), public_java_sources, new Consumer<Path>()
             {
-                Files.find( sourceDir, 10, public_java_sources ).forEach( new Consumer<Path>()
+                @Override
+                public void accept( Path path )
                 {
-                    @Override
-                    public void accept( Path path )
+                    try
                     {
-                        try
+                        for ( ExtractedDocTest docTest : new DocTestExtractor().extractFrom( path ) )
                         {
-                            for ( ExtractedDocTest docTest : new DocTestExtractor().extractFrom( path ) )
+                            List<ExtractedDocTest> testsForClass = allTests.get( docTest.testClass() );
+                            if ( testsForClass == null )
                             {
-                                List<ExtractedDocTest> testsForClass = allTests.get( docTest.testClass() );
-                                if(testsForClass == null)
-                                {
-                                    testsForClass = new LinkedList<>();
-                                    allTests.put( docTest.testClass(), testsForClass );
-                                }
-                                testsForClass.add( docTest );
+                                testsForClass = new LinkedList<>();
+                                allTests.put( docTest.testClass(), testsForClass );
                             }
+                            testsForClass.add( docTest );
+                        }
 
-                        }
-                        catch ( IOException e )
-                        {
-                            throw new RuntimeException( e );
-                        }
                     }
-                });
-            }
-            catch ( IOException e )
-            {
-                throw new RuntimeException( "Failed to load doctests from " + sourceDir + ": " + e.getMessage(), e );
-            }
+                    catch ( IOException e )
+                    {
+                        throw new RuntimeException( e );
+                    }
+                }
+            } );
         }
     }
-    private static final BiPredicate<Path,BasicFileAttributes> public_java_sources = new BiPredicate<Path,
-            BasicFileAttributes>()
+
+    private static final Predicate<Path> public_java_sources = new Predicate<Path>()
     {
         @Override
-        public boolean test( Path path, BasicFileAttributes basicFileAttributes )
+        public boolean test( Path path )
         {
             return path.toString().endsWith( ".java" );
         }
