@@ -37,9 +37,9 @@ import java.util.concurrent.Callable;
 public class ExtractedDocTest
 {
     private final String code;
-    private Collection<String> sourceClassImports;
-    private String sourcePackage;
-    private String sourceClass;
+    private final Collection<String> sourceClassImports;
+    private final String sourcePackage;
+    private final String sourceClass;
     private final String source;
     private final Class<?> testClass;
     private final Method testMethod;

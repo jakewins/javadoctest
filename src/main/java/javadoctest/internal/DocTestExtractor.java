@@ -71,7 +71,7 @@ public class DocTestExtractor
         // Fast exit for classes without <pre in their docs. A small contribution to cutting down read time
         if(!source.contains( "<pre" ))
         {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         ASTParser parser = ASTParser.newParser( AST.JLS2 );
