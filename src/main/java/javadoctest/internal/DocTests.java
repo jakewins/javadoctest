@@ -37,13 +37,17 @@ public class DocTests
 {
     private static Map<Class<?>, List<ExtractedDocTest>> allTests;
 
-    public static List<ExtractedDocTest> testsFor( Class<?> javaClass )
+    /**
+     * Returns the extracted doc tests that reference the given test class.
+     * @param testClass JUnit test class containing the test methods for some snippets
+     */
+    public static List<ExtractedDocTest> testsFor( Class<?> testClass )
     {
         ensureDocTestsLoaded();
-        List<ExtractedDocTest> tests = allTests.get( javaClass );
+        List<ExtractedDocTest> tests = allTests.get( testClass );
         if(tests == null)
         {
-            throw new AssertionFailedError( "No javadoc tests found for class " + javaClass.getName() );
+            throw new AssertionFailedError( "No javadoc tests found for class " + testClass.getName() );
         }
         return tests;
     }
