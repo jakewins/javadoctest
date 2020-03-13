@@ -93,7 +93,7 @@ public class DocTestExtractor
             return Collections.EMPTY_LIST;
         }
 
-        ASTParser parser = ASTParser.newParser( AST.JLS2 );
+        ASTParser parser = ASTParser.newParser( AST.JLS13 );
 
         parser.setResolveBindings( false );
         parser.setStatementsRecovery( false );
