@@ -19,8 +19,7 @@
  */
 package javadoctest.internal;
 
-import javadoctest.internal.func.Consumer;
-import javadoctest.internal.func.Predicate;
+import java.util.function.Predicate;
 import junit.framework.AssertionFailedError;
 
 import java.io.IOException;
@@ -55,41 +54,26 @@ public class DocTests
         {
             allTests = new HashMap<>();
 
-            FileWalker.walk( Paths.get( "." ), public_java_sources, new Consumer<Path>()
-            {
-                @Override
-                public void accept( Path path )
+            FileWalker.walk( Paths.get( "." ), public_java_sources, path -> {
+                try
                 {
-                    try
+                    for ( ExtractedDocTest docTest : new DocTestExtractor().extractFrom( path ) )
                     {
-                        for ( ExtractedDocTest docTest : new DocTestExtractor().extractFrom( path ) )
-                        {
-                            List<ExtractedDocTest> testsForClass = allTests.get( docTest.testClass() );
-                            if ( testsForClass == null )
-                            {
-                                testsForClass = new LinkedList<>();
-                                allTests.put( docTest.testClass(), testsForClass );
-                            }
-                            testsForClass.add( docTest );
-                        }
+                        List<ExtractedDocTest> testsForClass = allTests
+                            .computeIfAbsent(docTest.testClass(), k -> new LinkedList<>());
+                        testsForClass.add( docTest );
+                    }
 
-                    }
-                    catch ( IOException e )
-                    {
-                        throw new RuntimeException( e );
-                    }
                 }
-            } );
+                catch ( IOException e )
+                {
+                    throw new RuntimeException( e );
+                }
+            });
         }
     }
 
-    private static final Predicate<Path> public_java_sources = new Predicate<Path>()
-    {
-        @Override
-        public boolean test( Path path )
-        {
-            return path.toString().endsWith( ".java" );
-        }
-    };
+    private static final Predicate<Path> public_java_sources =
+        path -> path.toString().endsWith( ".java" );
 
 }

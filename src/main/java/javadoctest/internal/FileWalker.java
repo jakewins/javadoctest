@@ -1,33 +1,21 @@
 package javadoctest.internal;
 
-import javadoctest.internal.func.Consumer;
-import javadoctest.internal.func.Predicate;
-
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class FileWalker
 {
     public static void walk( Path root, Predicate<Path> filter, Consumer<Path> consumer )
     {
-        File[] list = root.toFile().listFiles();
-
-        if (list == null) return;
-
-        for ( File f : list )
-        {
-            Path current = f.toPath();
-            if ( f.isDirectory() )
-            {
-                walk( current, filter, consumer );
-            }
-            else
-            {
-                if( filter.test( current ))
-                {
-                    consumer.accept( current );
-                }
-            }
+        try (Stream<Path> paths = Files.walk(root)) {
+            paths.filter(filter)
+                .forEach(consumer);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 }
