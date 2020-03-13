@@ -37,9 +37,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.viewstreet</groupId>
-      <artifactId>jdt</artifactId>
-      <version>4.3.2</version>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.20.0</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
