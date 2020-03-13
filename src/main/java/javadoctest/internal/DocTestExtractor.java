@@ -19,6 +19,18 @@
  */
 package javadoctest.internal;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javadoctest.DocSnippet;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -35,21 +47,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * Extracts doc tests from java source files.
  */
@@ -60,29 +57,13 @@ public class DocTestExtractor
 
     public List<ExtractedDocTest> extractFrom( Path p ) throws IOException
     {
-        return extractExamples( readFileToString( p, "UTF-8" ) );
+        return extractExamples( readFileToString( p, StandardCharsets.UTF_8 ) );
     }
 
-    public static String readFileToString( Path path, String encoding ) throws IOException
+    public static String readFileToString( Path path, Charset encoding ) throws IOException
     {
-        try(FileInputStream stream = new FileInputStream( path.toFile() ))
-        {
-            return readInputStreamToString( stream, encoding );
-        }
-    }
-
-    public static String readInputStreamToString( InputStream stream, String encoding ) throws IOException {
-
-        Reader r = new BufferedReader( new InputStreamReader( stream, encoding ), 16384 );
-        StringBuilder result = new StringBuilder(16384);
-        char[] buffer = new char[16384];
-
-        int len;
-        while((len = r.read( buffer, 0, buffer.length )) >= 0) {
-            result.append(buffer, 0, len);
-        }
-
-        return result.toString();
+        byte[] bytes = Files.readAllBytes(path);
+        return new String(bytes, encoding);
     }
 
     public List<ExtractedDocTest> extractExamples( String source )
