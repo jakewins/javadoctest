@@ -1,5 +1,6 @@
-package javadoctest;
+package javadoctest.vintage;
 
+import javadoctest.DocSnippet;
 import org.junit.runner.RunWith;
 
 import java.util.Collection;

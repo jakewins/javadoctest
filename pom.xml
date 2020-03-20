@@ -8,12 +8,17 @@
   </properties>
 
   <groupId>com.jakewins</groupId>
-  <artifactId>javadoc-test</artifactId>
+  <artifactId>javadoc-test-parent</artifactId>
   <version>1.1.1</version>
 
-  <packaging>jar</packaging>
-  <name>JavaDoc Test Framework</name>
+  <packaging>pom</packaging>
+  <name>JavaDoc Test Framework: Parent</name>
   <description>Test example code from your javadocs</description>
+
+  <modules>
+    <module>core</module>
+    <module>junit-vintage-runner</module>
+  </modules>
 
   <url>http://github.com/jakewins/javadoctest</url>
   <scm>
@@ -35,38 +40,36 @@
     </license>
   </licenses>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.20.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13</version>
-      <scope>provided</scope>
-    </dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.jdt</groupId>
+        <artifactId>org.eclipse.jdt.core</artifactId>
+        <version>3.20.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>1.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>3.3.0</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -75,16 +78,18 @@
   </distributionManagement>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <showWarnings>true</showWarnings>
-          <release>8</release>
-        </configuration>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <configuration>
+            <showWarnings>true</showWarnings>
+            <release>8</release>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>

@@ -19,9 +19,6 @@
  */
 package javadoctest.internal;
 
-import java.util.function.Predicate;
-import junit.framework.AssertionFailedError;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Discovers and caches parsed javadoc tests.
@@ -47,7 +45,7 @@ public class DocTests
         List<ExtractedDocTest> tests = allTests.get( testClass );
         if(tests == null)
         {
-            throw new AssertionFailedError( "No javadoc tests found for class " + testClass.getName() );
+            throw new AssertionError( "No javadoc tests found for class " + testClass.getName() );
         }
         return tests;
     }

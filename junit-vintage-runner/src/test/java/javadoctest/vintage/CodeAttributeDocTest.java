@@ -1,6 +1,7 @@
-package javadoctest;
+package javadoctest.vintage;
 
 
+import javadoctest.DocSnippet;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,7 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class CodeAttributeDocTest
 {
     /**
-     * <pre class="doctest:javadoctest.CodeAttributeDocTest#testCodeInsideCodeAttributeWorks">
+     * <pre class="doctest:javadoctest.vintage.CodeAttributeDocTest#testCodeInsideCodeAttributeWorks">
      * {@code
      * String aString = "Hello, world!";
      * }

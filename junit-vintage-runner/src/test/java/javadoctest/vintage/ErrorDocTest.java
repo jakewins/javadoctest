@@ -1,5 +1,6 @@
-package javadoctest;
+package javadoctest.vintage;
 
+import javadoctest.DocSnippet;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -18,7 +19,7 @@ public class ErrorDocTest
     {
         // Expect
         exception.expectMessage( "Compilation failed:" );
-        exception.expectMessage( "javadoctest/ErrorDocTest$DocTest.java" );
+        exception.expectMessage( "javadoctest/vintage/ErrorDocTest$DocTest.java" );
         exception.expectMessage( "a compile error" );
 
         // When

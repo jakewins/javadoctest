@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package javadoctest;
+package javadoctest.vintage;
 
 import javadoctest.internal.DocTests;
 import javadoctest.internal.ExtractedDocTest;
