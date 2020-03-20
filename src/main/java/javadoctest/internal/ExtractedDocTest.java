@@ -197,20 +197,6 @@ public class ExtractedDocTest
         }
 
         @Override
-        public DocSnippet set( String variableName, Object variableValue )
-        {
-            return this.set( variableName, variableValue, variableValue.getClass() );
-        }
-
-        @Override
-        public DocSnippet set( String variableName, Object variableValue, Class<?> clazz )
-        {
-            variables.put( variableName, new Variable( clazz, variableValue ) );
-            addImport( clazz );
-            return this;
-        }
-
-        @Override
         public void run()
         {
             try

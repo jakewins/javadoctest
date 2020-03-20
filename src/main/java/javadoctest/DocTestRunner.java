@@ -45,7 +45,7 @@ import java.util.List;
  * <h2>For example:</h2>
  *
  * {@code
- * <pre class="doctest:javadoctest.DocTestRunnerDocTest#classDoc">
+ * <pre class="__doctest">
  * myObject.call();
  * </pre>
  * }

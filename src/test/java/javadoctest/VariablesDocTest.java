@@ -21,18 +21,4 @@ public class VariablesDocTest
         // Then
         assertThat( snippet.get( "aString" ), equalTo((Object)"Hello, world!"));
     }
-
-    /**
-     * <pre class="doctest:javadoctest.VariablesDocTest#testVariableRoundTrip">
-     * String aString = input;
-     * </pre>
-     */
-    public void testVariableRoundTrip( DocSnippet snippet )
-    {
-        // When
-        snippet.set( "input", "This is amazing!" ).run();
-
-        // Then
-        assertThat( snippet.get( "aString" ), equalTo((Object)"This is amazing!"));
-    }
 }
