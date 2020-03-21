@@ -19,20 +19,18 @@
  */
 package javadoctest.internal;
 
-import javadoctest.DocSnippet;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import javadoctest.DocSnippet;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class ExtractedDocTest
 {
@@ -41,8 +39,6 @@ public class ExtractedDocTest
     private final String sourcePackage;
     private final String sourceClass;
     private final String source;
-    private final Class<?> testClass;
-    private final Method testMethod;
     private final DocSnippet compiled;
 
     private final static String template =
@@ -55,9 +51,6 @@ public class ExtractedDocTest
             "/** This is an auto-generated class for testing code extracted from javadocs. */\n" +
             "public class %s implements Callable<Map<String, Object>>\n" +
             "{\n" +
-            "    /* ---- Context variables ---- */\n" +
-            "%s" +
-            "    /* -- End context variables -- */\n" +
             "\n" +
             "    public Map<String, Object> call() throws Exception\n" +
             "    {\n" +
@@ -72,29 +65,15 @@ public class ExtractedDocTest
             "    }\n" +
             "}\n";
 
-    public ExtractedDocTest( Collection<String> sourceClassImports, String sourcePackage, String sourceClass, String source,
-            Class<?> testClass,
-            Method testMethod,
-            String code )
+    public ExtractedDocTest(Collection<String> sourceClassImports, String sourcePackage,
+        String sourceClass, String source, String code)
     {
         this.sourceClassImports = sourceClassImports;
         this.sourcePackage = sourcePackage;
         this.sourceClass = sourceClass;
         this.source = source;
-        this.testClass = testClass;
-        this.testMethod = testMethod;
         this.code = code;
         this.compiled = compile();
-    }
-
-    public Class<?> testClass()
-    {
-        return testClass;
-    }
-
-    public Method testMethod()
-    {
-        return testMethod;
     }
 
     @Override
@@ -102,8 +81,6 @@ public class ExtractedDocTest
     {
         return "DocSnippet{" +
                "code='" + code + '\'' +
-               ", testClass=" + testClass +
-               ", testMethod=" + testMethod +
                '}';
     }
 
@@ -134,23 +111,6 @@ public class ExtractedDocTest
         return compiled;
     }
 
-    private static class Variable
-    {
-        private final Class<?> cls;
-        private final Object value;
-
-        private Variable( Class<?> cls, Object value )
-        {
-            this.cls = cls;
-            this.value = value;
-        }
-
-        public String shortClassName()
-        {
-            return cls.getSimpleName();
-        }
-    }
-
     private DocSnippet compile()
     {
         return new ExtractedSnippet();
@@ -158,7 +118,6 @@ public class ExtractedDocTest
 
     private class ExtractedSnippet implements DocSnippet
     {
-        private final Map<String, Variable> variables = new HashMap<>();
         private final Set<String> imports = new HashSet<>();
         private Map<String,Object> result;
 
@@ -201,17 +160,14 @@ public class ExtractedDocTest
         {
             try
             {
-                String variablesCode = createContextFieldDefinitions();
                 String importCode = createImportCode();
-                String exportCode = createExportCode(importCode, variablesCode);
+                String exportCode = createExportCode(importCode);
 
-                String exampleClassSource = createClassCode( variablesCode, importCode, exportCode );
+                String exampleClassSource = createClassCode(importCode, exportCode );
 
                 Callable<Map<String, Object>> example = new DynamicCompiler().newInstance(
                         targetPackage() + "." + targetClass(),
                         exampleClassSource );
-
-                assignVariables( example );
 
                 result = example.call();
             }
@@ -231,26 +187,25 @@ public class ExtractedDocTest
             return (T) result.get( variableName );
         }
 
-        private String createClassCode( String variablesCode, String importCode, String exportCode)
+        private String createClassCode( String importCode, String exportCode)
         {
             return String.format( template,
                     targetPackage(),
                     importCode,
                     targetClass(),
-                    variablesCode,
                     source(),
                     code().replace( "\n", "\n        " ),
                     exportCode );
         }
 
-        private String createExportCode( String importCode, String variablesCode )
+        private String createExportCode( String importCode )
         {
             ASTParser parser = ASTParser.newParser( AST.JLS2 );
 
             parser.setResolveBindings(false);
             parser.setStatementsRecovery(false);
             parser.setBindingsRecovery(false);
-            parser.setSource(createClassCode( variablesCode, importCode, "" ).toCharArray());
+            parser.setSource(createClassCode( importCode, "" ).toCharArray());
             parser.setIgnoreMethodBodies(false);
 
             ASTNode ast = parser.createAST( null );
@@ -281,32 +236,6 @@ public class ExtractedDocTest
             for ( String imp : imports )
             {
                 sb.append( "import " ).append( imp ).append( ";\n" );
-            }
-            return sb.toString();
-        }
-
-        private void assignVariables( Object instance ) throws NoSuchFieldException, IllegalAccessException
-        {
-            for ( Map.Entry<String,Variable> ctxVar : variables.entrySet() )
-            {
-                String name = ctxVar.getKey();
-                Variable var = ctxVar.getValue();
-                instance.getClass().getField( name ).set( instance, var.value );
-            }
-        }
-
-        /**
-         * Each example may depend on a set of context variables, like 'session' and so on. This builds those variables
-         * up as a set of public fields in the example class that we construct.
-         */
-        private String createContextFieldDefinitions()
-        {
-            StringBuilder sb = new StringBuilder();
-            for ( Map.Entry<String,Variable> ctxVar : variables.entrySet() )
-            {
-                String name = ctxVar.getKey();
-                Variable var = ctxVar.getValue();
-                sb.append( String.format( "    public %s %s;\n", var.shortClassName(), name ) );
             }
             return sb.toString();
         }
