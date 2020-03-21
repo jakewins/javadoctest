@@ -36,13 +36,4 @@ public interface DocSnippet
      *     this snippet
      */
     void run() throws Exception;
-
-    /**
-     * After the snippet has ben {@link #run() run}, you can access variables declared inside the
-     * snippet here.
-     * @param variableName the name of the variable
-     * @param <T> the type of the variable
-     * @return the variable
-     */
-    <T> T get( String variableName );
 }

@@ -20,17 +20,11 @@
 package javadoctest.internal;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import javadoctest.DocSnippet;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class ExtractedDocTest
 {
@@ -49,20 +43,17 @@ public class ExtractedDocTest
             "%s" +
             "/* ------- End Imports ------- */\n" +
             "\n" +
-            "/** This is an auto-generated class for testing code extracted from javadocs. */\n" +
-            "public class %s implements Callable<Map<String, Object>>\n" +
+            "/** This is an auto-generated class for testing code extracted from Javadocs. */\n" +
+            "public class %s implements Callable<Void>\n" +
             "{\n" +
             "\n" +
-            "    public Map<String, Object> call() throws Exception\n" +
+            "    public Void call() throws Exception\n" +
             "    {\n" +
             "        /* ---- Snippet ---- */\n" +
             "        /* Extracted from: %s */\n" +
             "        %s\n" +
             "        /* -- End snippet -- */\n" +
-            "\n" +
-            "        Map<String, Object> $out = new HashMap<>();\n" +
-            "%s" +
-            "        return $out;\n" +
+            "        return null;\n" +
             "    }\n" +
             "}\n";
 
@@ -120,7 +111,6 @@ public class ExtractedDocTest
     private class ExtractedSnippet implements DocSnippet
     {
         private final Set<String> imports = new HashSet<>();
-        private Map<String,Object> result;
 
         public ExtractedSnippet()
         {
@@ -131,8 +121,7 @@ public class ExtractedDocTest
         private void addDefaultImports()
         {
             addImport( Callable.class );
-            addImport( Map.class );
-            addImport( HashMap.class );
+            addImport( Void.class );
 
             // TODO: This should not live here. We should take a list of Class<> and Method<> instances, not strings
             for ( String sourceClassImport : sourceClassImports )
@@ -160,64 +149,23 @@ public class ExtractedDocTest
         public void run() throws Exception
         {
             String importCode = createImportCode();
-            String exportCode = createExportCode(importCode);
-
-            String exampleClassSource = createClassCode(importCode, exportCode);
+            String exampleClassSource = createClassCode(importCode);
 
             Callable<Map<String, Object>> example = new DynamicCompiler().newInstance(
                 targetPackage() + "." + targetClass(),
                 exampleClassSource);
 
-            result = example.call();
+            example.call();
         }
 
-        @Override
-        public <T> T get( String variableName )
-        {
-            return (T) result.get( variableName );
-        }
-
-        private String createClassCode( String importCode, String exportCode)
+        private String createClassCode(String importCode)
         {
             return String.format( template,
                     targetPackage(),
                     importCode,
                     targetClass(),
                     source(),
-                    code().replace( "\n", "\n        " ),
-                    exportCode );
-        }
-
-        private String createExportCode( String importCode )
-        {
-            ASTParser parser = ASTParser.newParser( AST.JLS2 );
-
-            parser.setResolveBindings(false);
-            parser.setStatementsRecovery(false);
-            parser.setBindingsRecovery(false);
-            parser.setSource(createClassCode( importCode, "" ).toCharArray());
-            parser.setIgnoreMethodBodies(false);
-
-            ASTNode ast = parser.createAST( null );
-
-            final StringBuilder sb = new StringBuilder();
-            ASTVisitor visitor = new ASTVisitor()
-            {
-                @Override
-                public boolean visit( VariableDeclarationFragment node )
-                {
-                    String varName = node.getName().getIdentifier();
-                    if(!varName.startsWith( "$" ))
-                    {
-                        sb.append( "        $out.put(\"" )
-                          .append( varName ).append( "\", " )
-                          .append( varName ).append( ");\n" );
-                    }
-                    return true;
-                }
-            };
-            ast.accept( visitor );
-            return sb.toString();
+                    code().replace( "\n", "\n        " ));
         }
 
         private String createImportCode()
