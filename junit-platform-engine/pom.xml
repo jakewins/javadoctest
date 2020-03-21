@@ -76,6 +76,40 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
+
+      <!-- A test configuration of the engine integration into junit-platform-maven-plugin. -->
+      <plugin>
+        <groupId>de.sormuras.junit</groupId>
+        <artifactId>junit-platform-maven-plugin</artifactId>
+        <version>1.0.0-M5</version>
+        <extensions>false</extensions> <!-- Neither install this plugin into `test` phase, nor touch Surefire. -->
+        <executions>
+          <execution>
+            <id>run-doc-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>launch</goal>
+            </goals>
+            <configuration>
+              <tweaks>
+                <failIfNoTests>false</failIfNoTests>
+              </tweaks>
+              <selectors>
+<!--                todo: Obviously, fails because there are some failing tests, but also causes
+                          a plugin error! Submit an issue to
+                          https://github.com/sormuras/junit-platform-maven-plugin/
+-->
+<!--                <directories>-->
+<!--                  <dir>${project.build.testSourceDirectory}</dir>-->
+<!--                </directories>-->
+                <files>
+                  <file>${project.build.testSourceDirectory}/javadoctest/engine/fixture/FixtureDocTestSimple.java</file>
+                </files>
+              </selectors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
