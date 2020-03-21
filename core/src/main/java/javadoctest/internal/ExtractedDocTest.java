@@ -38,6 +38,7 @@ public class ExtractedDocTest
     private final Collection<String> sourceClassImports;
     private final String sourcePackage;
     private final String sourceClass;
+    /** The source <em>location</em> of this doc test. Not to be confused with source {@link #code}. */
     private final String source;
     private final DocSnippet compiled;
 
@@ -156,29 +157,18 @@ public class ExtractedDocTest
         }
 
         @Override
-        public void run()
+        public void run() throws Exception
         {
-            try
-            {
-                String importCode = createImportCode();
-                String exportCode = createExportCode(importCode);
+            String importCode = createImportCode();
+            String exportCode = createExportCode(importCode);
 
-                String exampleClassSource = createClassCode(importCode, exportCode );
+            String exampleClassSource = createClassCode(importCode, exportCode);
 
-                Callable<Map<String, Object>> example = new DynamicCompiler().newInstance(
-                        targetPackage() + "." + targetClass(),
-                        exampleClassSource );
+            Callable<Map<String, Object>> example = new DynamicCompiler().newInstance(
+                targetPackage() + "." + targetClass(),
+                exampleClassSource);
 
-                result = example.call();
-            }
-            catch ( Exception e )
-            {
-                if(e instanceof RuntimeException)
-                {
-                    throw (RuntimeException)e;
-                }
-                throw new RuntimeException( e );
-            }
+            result = example.call();
         }
 
         @Override

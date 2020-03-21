@@ -5,6 +5,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Dependencies versions -->
+    <junit.jupiter.version>5.6.0</junit.jupiter.version>
   </properties>
 
   <groupId>com.jakewins</groupId>
@@ -17,6 +19,7 @@
 
   <modules>
     <module>core</module>
+    <module>junit-platform-engine</module>
   </modules>
 
   <url>http://github.com/jakewins/javadoctest</url>
@@ -42,6 +45,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.jupiter.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.eclipse.jdt</groupId>
         <artifactId>org.eclipse.jdt.core</artifactId>
         <version>3.20.0</version>
@@ -55,6 +65,11 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.15.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -76,6 +91,11 @@
             <showWarnings>true</showWarnings>
             <release>8</release>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.2</version>
         </plugin>
       </plugins>
     </pluginManagement>

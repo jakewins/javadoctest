@@ -31,8 +31,11 @@ public interface DocSnippet
     /**
      * Compile and run the code. If your snippet requires {@link #addImport(Class) imports},
      * this should get called after you've organized those.
+     *
+     * @throws Exception the exception occurred during the compilation or the execution of
+     *     this snippet
      */
-    void run();
+    void run() throws Exception;
 
     /**
      * After the snippet has ben {@link #run() run}, you can access variables declared inside the
