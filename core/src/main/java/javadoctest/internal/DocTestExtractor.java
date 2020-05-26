@@ -19,7 +19,17 @@
  */
 package javadoctest.internal;
 
-import javadoctest.DocSnippet;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -35,21 +45,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * Extracts doc tests from java source files.
  */
@@ -60,29 +55,13 @@ public class DocTestExtractor
 
     public List<ExtractedDocTest> extractFrom( Path p ) throws IOException
     {
-        return extractExamples( readFileToString( p, "UTF-8" ) );
+        return extractExamples( readFileToString( p, StandardCharsets.UTF_8 ) );
     }
 
-    public static String readFileToString( Path path, String encoding ) throws IOException
+    public static String readFileToString( Path path, Charset encoding ) throws IOException
     {
-        try(FileInputStream stream = new FileInputStream( path.toFile() ))
-        {
-            return readInputStreamToString( stream, encoding );
-        }
-    }
-
-    public static String readInputStreamToString( InputStream stream, String encoding ) throws IOException {
-
-        Reader r = new BufferedReader( new InputStreamReader( stream, encoding ), 16384 );
-        StringBuilder result = new StringBuilder(16384);
-        char[] buffer = new char[16384];
-
-        int len;
-        while((len = r.read( buffer, 0, buffer.length )) >= 0) {
-            result.append(buffer, 0, len);
-        }
-
-        return result.toString();
+        byte[] bytes = Files.readAllBytes(path);
+        return new String(bytes, encoding);
     }
 
     public List<ExtractedDocTest> extractExamples( String source )
@@ -90,7 +69,7 @@ public class DocTestExtractor
         // Fast exit for classes without <pre in their docs. A small contribution to cutting down read time
         if(!source.contains( "<pre" ))
         {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         ASTParser parser = ASTParser.newParser( AST.JLS2 );
@@ -194,61 +173,9 @@ public class DocTestExtractor
                 text = text.substring( "{@code".length(), text.length() - 1 );
             }
 
-            Class<?> testClass = extractClass( pkg, classAttribute );
-            Method testMethod = extractMethod( testClass, classAttribute );
-            blocks.add( new ExtractedDocTest( imports, pkg, rootClass, source, testClass, testMethod, text ) );
+            blocks.add( new ExtractedDocTest( imports, pkg, rootClass, source, text ) );
         }
         return blocks;
-    }
-
-    private Method extractMethod( Class<?> testClass, String classAttribute )
-    {
-        String methodName = "test";
-        String[] split = classAttribute.split( "#" );
-        if(split.length == 2 && split[1].length() > 0)
-        {
-            methodName = split[1];
-        }
-
-        try
-        {
-            return testClass.getDeclaredMethod( methodName, DocSnippet.class );
-        }
-        catch ( NoSuchMethodException e )
-        {
-            throw new IllegalArgumentException( "DocTest referenced a method named '" + methodName + "' in " +
-                                                testClass.getName() +
-                                ", but a valid doctest method with that name cannot be found. Remember that doctest " +
-                                "methods are required to take a single argument, a DocSnippet object." );
-        }
-    }
-
-    private Class<?> extractClass( String sourcePackage, String classAttribute )
-    {
-        String[] split = classAttribute.split( ":" );
-        if(split.length == 2 && split[1].length() > 0)
-        {
-            String className = split[1].split( "#" )[0];
-            try
-            {
-                return Class.forName( className );
-            }
-            catch ( ClassNotFoundException e )
-            {
-                try
-                {
-                    // Try looking for the class using the same package as the source file
-                    return Class.forName( sourcePackage + "." + className );
-                }
-                catch ( ClassNotFoundException e2 )
-                {
-                    throw new RuntimeException( "Missing class: " + className, e );
-                }
-            }
-        }
-        throw new RuntimeException( "Malformed doctest class attribute, the format is: 'doctest:<class>#<method>', " +
-                                    "for instance, 'doctest:org.MyTestClass#myMethod'. Class attribute was: '" +
-                                    classAttribute + "'.");
     }
 
     private String extractJavadoc( String comment )
